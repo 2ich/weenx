@@ -76,7 +76,9 @@ window.addEventListener('mousedown', e => {
         y: Math.floor(ymouse / gz),
         x: Math.floor(xmouse / gz)
     }
+
     cells[cp.y][cp.x].color = '#333'
+
     cells[cp.y][cp.x + 1].color = '#555'
     cells[cp.y][cp.x - 1].color = '#555'
     cells[cp.y + 1][cp.x].color = '#555'
@@ -96,14 +98,14 @@ counter = 0
 let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d');
 
-cwidth = 600
-cheight = 400
+cwidth = 900
+cheight = 600
 canvas.width = cwidth
 canvas.height = cheight
 
 framerate = 20
 
-gz = 40
+gz = 30
 xcells = cwidth / gz
 ycells = cheight / gz
 
@@ -155,6 +157,21 @@ function draw() {
             // console.log(x * gz, y * gz, x * gz + gz, y * gz + gz)
         }
     }
+
+    ctx.fillStyle = "lightblue"
+    ctx.fillRect(
+        Math.floor(xmouse / gz) * gz,
+        Math.floor(ymouse / gz) * gz,
+        Math.floor(xmouse / gz) * gz + gz,
+        Math.floor(ymouse / gz) * gz + gz
+    )
+    console.log(
+        Math.floor(xmouse / gz) * gz,
+        Math.floor(ymouse / gz) * gz,
+        Math.floor(xmouse / gz) * gz + gz,
+        Math.floor(ymouse / gz) * gz + gz
+    )
+
 }
 
 setInterval(draw, framerate)
