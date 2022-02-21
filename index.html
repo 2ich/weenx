@@ -88,10 +88,10 @@ window.addEventListener('mousedown', e => {
     // cells[cp.y - 1][cp.x].color = '#555'
 
     // if (
-    //     cells[cp.y][cp.x + 1].color == 'black' ||
-    //     cells[cp.y][cp.x - 1].color == 'black' ||
-    //     cells[cp.y + 1][cp.x].color == 'black' ||
-    //     cells[cp.y - 1][cp.x].color == 'black'
+    //     cp.x + 1 < xcells && cells[cp.y][cp.x + 1].color == 'black' ||
+    //     cp.x - 1 > -1 && cells[cp.y][cp.x - 1].color == 'black' ||
+    //     cp.y + 1 < ycells && cells[cp.y + 1][cp.x].color == 'black' ||
+    //     cp.y - 1 > -1 && cells[cp.y - 1][cp.x].color == 'black'
     // ) {
     //     console.log('pass')
     // }
@@ -135,6 +135,7 @@ mrg = 0
 
 // cl_bg = "#0088ff"
 cl_bg = "#fff"
+cl_empty = '#eee'
 
 cells = []
 
@@ -142,7 +143,7 @@ for (let i = 0; i < ycells; i++) {
     celly = []
     for (let j = 0; j < xcells; j++) {
         celly.push({
-            color: "#eee",
+            color: cl_empty,
             selected: false,
         })
     }
@@ -220,6 +221,29 @@ const socket = io()
 
 socket.on('move', (data) => {
     cells[data.y][data.x].color = data.color
+
+    if (
+        data.x + 1 < xcells && cells[data.y][data.x + 1].color == 'black' ||
+        data.x - 1 > -1 && cells[data.y][data.x - 1].color == 'black' ||
+        data.y + 1 < ycells && cells[data.y + 1][data.x].color == 'black' ||
+        data.y - 1 > -1 && cells[data.y - 1][data.x].color == 'black'
+    ) {
+        console.log('pass')
+    }
+
+    if (data.x + 1 < xcells && cells[data.y][data.x + 1].color != cl_empty) {
+        cells[data.y][data.x + 1].color = data.color
+    }
+    if (data.x - 1 > -1 && cells[data.y][data.x - 1].color != cl_empty) {
+        cells[data.y][data.x - 1].color = data.color
+    }
+    if (data.y + 1 < ycells && cells[data.y + 1][data.x].color != cl_empty) {
+        cells[data.y + 1][data.x].color = data.color
+    }
+    if (data.y - 1 > -1 && cells[data.y - 1][data.x].color != cl_empty) {
+        cells[data.y - 1][data.x].color = data.color
+    }
+    
 })
 
 
