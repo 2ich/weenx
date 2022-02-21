@@ -15,7 +15,10 @@
 </head>
 
 <body>
-
+    
+<!-- <p>
+    td moving bg
+</p> -->
 
 <canvas id="canvas">
     Your browser does not support HTML5
@@ -84,14 +87,14 @@ window.addEventListener('mousedown', e => {
     // cells[cp.y + 1][cp.x].color = '#555'
     // cells[cp.y - 1][cp.x].color = '#555'
 
-    if (
-        cells[cp.y][cp.x + 1].color == 'black' ||
-        cells[cp.y][cp.x - 1].color == 'black' ||
-        cells[cp.y + 1][cp.x].color == 'black' ||
-        cells[cp.y - 1][cp.x].color == 'black'
-    ) {
-        console.log('pass')
-    }
+    // if (
+    //     cells[cp.y][cp.x + 1].color == 'black' ||
+    //     cells[cp.y][cp.x - 1].color == 'black' ||
+    //     cells[cp.y + 1][cp.x].color == 'black' ||
+    //     cells[cp.y - 1][cp.x].color == 'black'
+    // ) {
+    //     console.log('pass')
+    // }
 
     var data = {
         x: cp.x,
