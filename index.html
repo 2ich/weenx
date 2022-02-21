@@ -1,0 +1,154 @@
+<head>
+    <title>weenx</title>
+
+    <style>
+        body {
+            margin: 0;
+            margin: 10;
+            background-color: #ffffff;
+        }
+        #canvas {
+            border: 0px solid black;
+            background-color: #ff0000;
+        }
+    </style>
+</head>
+
+<body>
+
+
+<canvas id="canvas">
+    Your browser does not support HTML5
+</canvas>
+
+<!-- <h1 id="hone">helllwo</h1> -->
+
+<!-- <script src="/socket.io/socket.io.js"></script> -->
+
+<script>
+
+// inner
+function removeOnce(arr, value) {
+    var index = arr.indexOf(value);
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+    return arr;
+}
+
+function removeAll(arr, value) {
+    var i = 0;
+    while (i < arr.length) {
+        if (arr[i] === value) {
+            arr.splice(i, 1);
+        } else {
+            ++i;
+        }
+    }
+    return arr;
+}
+
+function getMousePos(canvas, e) {
+    var rect = canvas.getBoundingClientRect()
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    }
+}
+
+window.addEventListener('mousemove', mouseMove)
+
+function mouseMove(e) {
+    rect = canvas.getBoundingClientRect()
+    xmouse = e.clientX - rect.left
+    ymouse = e.clientY - rect.top
+}
+
+
+
+window.addEventListener('mousedown', e => {
+    console.log("MOUSE DOWNED")
+    mdown = true
+    console.log(mdown)
+    console.log(xmouse, ymouse)
+
+    cells[Math.floor(ymouse / gz)][Math.floor(xmouse / gz)].color = '#555'
+
+})
+
+window.addEventListener('mouseup', e => {
+    console.log("MOUSE UPED")
+    mdown = false
+    console.log(mdown)
+})
+
+
+counter = 0
+let canvas = document.getElementById('canvas')
+let ctx = canvas.getContext('2d');
+
+cwidth = 600
+cheight = 400
+canvas.width = cwidth
+canvas.height = cheight
+
+framerate = 20
+
+gz = 100
+xcells = cwidth / gz
+ycells = cheight / gz
+
+cl_bg = "#eee"
+
+cells = []
+
+for (let i = 0; i < ycells; i++) {
+    celly = []
+    for (let j = 0; j < xcells; j++) {
+        celly.push({
+            color: "#eee",
+            selected: false,
+        })
+    }
+    cells.push(celly)
+}
+
+console.log(cells)
+
+xmouse = 0
+ymouse = 0
+
+mdown = false
+
+
+
+function draw() {
+
+    // console.log("draw loop")
+    // mpos = getMousePos(canvas, e)
+    console.log(xmouse, ymouse)
+    // bg
+    ctx.fillStyle = cl_bg
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // cells
+    for (let y = 0; y < ycells; y++) {
+        ctx.fillStyle = "blue"
+        ctx.fillRect(0, y * gz, cwidth, y * gz + 4)
+        for (let x = 0; x < xcells; x++) {
+            ctx.fillStyle = cells[y][x].color
+            ctx.fillRect(x * gz, y * gz, x * gz + gz, y * gz + gz)
+            // console.log(x * gz, y * gz, x * gz + gz, y * gz + gz)
+        }
+    }
+}
+
+setInterval(draw, framerate)
+
+// const socket = io()
+
+
+
+
+</script>
+</body>
