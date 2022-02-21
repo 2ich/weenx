@@ -14,6 +14,20 @@ app.get('/', (req, res) => {
 })
 
 
+io.on('connection', (socket) => {
+    console.log('new connection', socket.id)
+
+    socket.on('disconnect', () => {
+        console.log(socket.id, 'disconnected')
+    })
+
+    socket.on('move', (data) => {
+        socket.broadcast.emit('move', data)
+        console.log(data)
+    })
+})
+
+
 
 
 server.listen(port, () => {

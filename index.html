@@ -77,13 +77,30 @@ window.addEventListener('mousedown', e => {
         x: Math.floor(xmouse / gz)
     }
 
-    cells[cp.y][cp.x].color = '#333'
+    cells[cp.y][cp.x].color = 'black'
 
-    cells[cp.y][cp.x + 1].color = '#555'
-    cells[cp.y][cp.x - 1].color = '#555'
-    cells[cp.y + 1][cp.x].color = '#555'
-    cells[cp.y - 1][cp.x].color = '#555'
+    // cells[cp.y][cp.x + 1].color = '#555'
+    // cells[cp.y][cp.x - 1].color = '#555'
+    // cells[cp.y + 1][cp.x].color = '#555'
+    // cells[cp.y - 1][cp.x].color = '#555'
 
+    if (
+        cells[cp.y][cp.x + 1].color == 'black' ||
+        cells[cp.y][cp.x - 1].color == 'black' ||
+        cells[cp.y + 1][cp.x].color == 'black' ||
+        cells[cp.y - 1][cp.x].color == 'black'
+    ) {
+        console.log('pass')
+    }
+
+    var data = {
+        x: cp.x,
+        y: cp.y,
+        // color: 'mediumpurple'
+        color: 'dodgerblue'
+    }
+
+    socket.emit('move', data)
 
 })
 
@@ -105,11 +122,16 @@ canvas.height = cheight
 
 framerate = 20
 
-gz = 30
+gz = 50
 xcells = cwidth / gz
 ycells = cheight / gz
 
-cl_bg = "#eee"
+console.log(xcells, ycells)
+
+mrg = 0
+
+// cl_bg = "#0088ff"
+cl_bg = "#fff"
 
 cells = []
 
@@ -124,6 +146,8 @@ for (let i = 0; i < ycells; i++) {
     cells.push(celly)
 }
 
+cells[3][5].color = 'orange'
+
 console.log(cells)
 
 xmouse = 0
@@ -137,7 +161,7 @@ function draw() {
 
     // console.log("draw loop")
     // mpos = getMousePos(canvas, e)
-    console.log(xmouse, ymouse)
+    // console.log(xmouse, ymouse)
     
     // if (mdown) {
     //     cells[Math.floor(ymouse / gz)][Math.floor(xmouse / gz)].color = '#555'
@@ -149,28 +173,39 @@ function draw() {
 
     // cells
     for (let y = 0; y < ycells; y++) {
-        ctx.fillStyle = "blue"
-        ctx.fillRect(0, y * gz, cwidth, y * gz + 4)
+        // ctx.fillStyle = "blue"
+        // ctx.fillRect(0, y * gz, cwidth, y * gz + 4)
         for (let x = 0; x < xcells; x++) {
             ctx.fillStyle = cells[y][x].color
-            ctx.fillRect(x * gz, y * gz, x * gz + gz, y * gz + gz)
+            ctx.fillRect(
+                x * gz + mrg,
+                y * gz + mrg,
+                x * gz + gz - mrg,
+                y * gz + gz - mrg
+            )
             // console.log(x * gz, y * gz, x * gz + gz, y * gz + gz)
+            console.log(
+                x * gz + mrg,
+                y * gz + mrg,
+                x * gz + gz - mrg,
+                y * gz + gz - mrg
+            )
         }
     }
 
-    ctx.fillStyle = "lightblue"
-    ctx.fillRect(
-        Math.floor(xmouse / gz) * gz,
-        Math.floor(ymouse / gz) * gz,
-        Math.floor(xmouse / gz) * gz + gz,
-        Math.floor(ymouse / gz) * gz + gz
-    )
-    console.log(
-        Math.floor(xmouse / gz) * gz,
-        Math.floor(ymouse / gz) * gz,
-        Math.floor(xmouse / gz) * gz + gz,
-        Math.floor(ymouse / gz) * gz + gz
-    )
+    // ctx.fillStyle = "lightblue"
+    // ctx.fillRect(
+    //     Math.floor(xmouse / gz) * gz,
+    //     Math.floor(ymouse / gz) * gz,
+    //     Math.floor(xmouse / gz) * gz + gz,
+    //     Math.floor(ymouse / gz) * gz + gz
+    // )
+    // console.log(
+    //     Math.floor(xmouse / gz) * gz,
+    //     Math.floor(ymouse / gz) * gz,
+    //     Math.floor(xmouse / gz) * gz + gz,
+    //     Math.floor(ymouse / gz) * gz + gz
+    // )
 
 }
 
@@ -178,6 +213,11 @@ setInterval(draw, framerate)
 
 
 const socket = io()
+
+
+socket.on('move', (data) => {
+    cells[data.y][data.x].color = data.color
+})
 
 
 
