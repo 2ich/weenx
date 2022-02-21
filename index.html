@@ -51,6 +51,10 @@ function removeAll(arr, value) {
     return arr;
 }
 
+function rint(min, max) {
+    return min + Math.floor(Math.random() * (max + 1 - min))
+}
+
 function getMousePos(canvas, e) {
     var rect = canvas.getBoundingClientRect()
     return {
@@ -80,7 +84,62 @@ window.addEventListener('mousedown', e => {
         x: Math.floor(xmouse / gz)
     }
 
-    cells[cp.y][cp.x].color = cl_self
+    if (cells[cp.y][cp.x].color == cl_empty) {
+
+        if (Math.abs(selc.x - cp.x) <= 1 && Math.abs(selc.y - cp.y) <= 1) {
+            cells[cp.y][cp.x].color = cl_self
+            
+            if (
+                cp.x + 1 < xcells &&
+                cells[cp.y][cp.x + 1].color != cl_empty &&
+                cells[cp.y][cp.x + 1].color != cl_self
+            ) {
+                cells[cp.y][cp.x + 1].color = cl_self
+            }
+            if (
+                cp.x - 1 > -1 &&
+                cells[cp.y][cp.x - 1].color != cl_empty &&
+                cells[cp.y][cp.x - 1].color != cl_self
+            ) {
+                cells[cp.y][cp.x - 1].color = cl_self
+            }
+            if (
+                cp.y + 1 < ycells &&
+                cells[cp.y + 1][cp.x].color != cl_empty &&
+                cells[cp.y + 1][cp.x].color != cl_self
+            ) {
+                cells[cp.y + 1][cp.x].color = cl_self
+            }
+            if (
+                cp.y - 1 > -1 &&
+                cells[cp.y - 1][cp.x].color != cl_empty &&
+                cells[cp.y - 1][cp.x].color != cl_self
+            ) {
+                cells[cp.y - 1][cp.x].color = cl_self
+            }
+
+            var data = {
+                x: cp.x,
+                y: cp.y,
+                // color: 'mediumpurple'
+                color: 'dodgerblue'
+                // color: 'deepskyblue'
+            }
+
+            socket.emit('move', data)
+
+        }
+        
+        // yada-yada
+        // check if selected and stuff idk yet
+    }
+    else if(cells[cp.y][cp.x].color == cl_self) {
+        cells[cp.y][cp.x].selected = true
+        selc.x = cp.x
+        selc.y = cp.y
+        console.log('selc pos', selc.x, selc.y)
+    }
+
 
     // if (cp.x + 1 < xcells && ![cl_empty, cl_self].includes(cells[cp.y][cp.x + 1].color)) {
     //     cells[cp.y][cp.x + 1].color = cp.color
@@ -95,34 +154,6 @@ window.addEventListener('mousedown', e => {
     //     cells[cp.y - 1][cp.x].color = cp.color
     // }
     
-    if (
-        cp.x + 1 < xcells &&
-        cells[cp.y][cp.x + 1].color != cl_empty &&
-        cells[cp.y][cp.x + 1].color != cl_self
-    ) {
-        cells[cp.y][cp.x + 1].color = cl_self
-    }
-    if (
-        cp.x - 1 > -1 &&
-        cells[cp.y][cp.x - 1].color != cl_empty &&
-        cells[cp.y][cp.x - 1].color != cl_self
-    ) {
-        cells[cp.y][cp.x - 1].color = cl_self
-    }
-    if (
-        cp.y + 1 < ycells &&
-        cells[cp.y + 1][cp.x].color != cl_empty &&
-        cells[cp.y + 1][cp.x].color != cl_self
-    ) {
-        cells[cp.y + 1][cp.x].color = cl_self
-    }
-    if (
-        cp.y - 1 > -1 &&
-        cells[cp.y - 1][cp.x].color != cl_empty &&
-        cells[cp.y - 1][cp.x].color != cl_self
-    ) {
-        cells[cp.y - 1][cp.x].color = cl_self
-    }
     
     // cells[cp.y][cp.x + 1].color = '#555'
     // cells[cp.y][cp.x - 1].color = '#555'
@@ -138,14 +169,6 @@ window.addEventListener('mousedown', e => {
     //     console.log('pass')
     // }
 
-    var data = {
-        x: cp.x,
-        y: cp.y,
-        // color: 'mediumpurple'
-        color: 'dodgerblue'
-    }
-
-    socket.emit('move', data)
 
 })
 
@@ -177,8 +200,14 @@ mrg = 0
 
 // cl_bg = "#0088ff"
 cl_bg = "#fff"
-cl_empty = '#eee'
+cl_empty = '#f8f8f8'
 cl_self = 'black'
+cl_selc = 'orange'
+
+selc = {
+    x: 0,
+    y: 0
+} 
 
 cells = []
 
@@ -193,7 +222,14 @@ for (let i = 0; i < ycells; i++) {
     cells.push(celly)
 }
 
-cells[3][5].color = 'orange'
+// cells[3][5].color = 'orange'
+cells[3][5].color = 'crimson'
+
+rix = rint(0, xcells - 1)
+riy = rint(0, ycells - 1)
+console.log(rix, riy)
+cells[riy][rix].color = cl_self
+
 
 console.log(cells)
 
@@ -223,7 +259,12 @@ function draw() {
         // ctx.fillStyle = "blue"
         // ctx.fillRect(0, y * gz, cwidth, y * gz + 4)
         for (let x = 0; x < xcells; x++) {
+
             ctx.fillStyle = cells[y][x].color
+
+            if (x == selc.x && y == selc.y)
+                ctx.fillStyle = cl_selc
+
             ctx.fillRect(
                 x * gz + mrg,
                 y * gz + mrg,
@@ -231,12 +272,12 @@ function draw() {
                 y * gz + gz - mrg
             )
             // console.log(x * gz, y * gz, x * gz + gz, y * gz + gz)
-            console.log(
-                x * gz + mrg,
-                y * gz + mrg,
-                x * gz + gz - mrg,
-                y * gz + gz - mrg
-            )
+            // console.log(
+            //     x * gz + mrg,
+            //     y * gz + mrg,
+            //     x * gz + gz - mrg,
+            //     y * gz + gz - mrg
+            // )
         }
     }
 
