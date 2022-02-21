@@ -80,8 +80,50 @@ window.addEventListener('mousedown', e => {
         x: Math.floor(xmouse / gz)
     }
 
-    cells[cp.y][cp.x].color = 'black'
+    cells[cp.y][cp.x].color = cl_self
 
+    // if (cp.x + 1 < xcells && ![cl_empty, cl_self].includes(cells[cp.y][cp.x + 1].color)) {
+    //     cells[cp.y][cp.x + 1].color = cp.color
+    // }
+    // if (cp.x - 1 > -1 && ![cl_empty, cl_self].includes(cells[cp.y][cp.x - 1].color)) {
+    //     cells[cp.y][cp.x - 1].color = cp.color
+    // }
+    // if (cp.y + 1 < ycells && ![cl_empty, cl_self].includes(cells[cp.y + 1][cp.x].color)) {
+    //     cells[cp.y + 1][cp.x].color = cp.color
+    // }
+    // if (cp.y - 1 > -1 && ![cl_empty, cl_self].includes(cells[cp.y - 1][cp.x].color)) {
+    //     cells[cp.y - 1][cp.x].color = cp.color
+    // }
+    
+    if (
+        cp.x + 1 < xcells &&
+        cells[cp.y][cp.x + 1].color != cl_empty &&
+        cells[cp.y][cp.x + 1].color != cl_self
+    ) {
+        cells[cp.y][cp.x + 1].color = cl_self
+    }
+    if (
+        cp.x - 1 > -1 &&
+        cells[cp.y][cp.x - 1].color != cl_empty &&
+        cells[cp.y][cp.x - 1].color != cl_self
+    ) {
+        cells[cp.y][cp.x - 1].color = cl_self
+    }
+    if (
+        cp.y + 1 < ycells &&
+        cells[cp.y + 1][cp.x].color != cl_empty &&
+        cells[cp.y + 1][cp.x].color != cl_self
+    ) {
+        cells[cp.y + 1][cp.x].color = cl_self
+    }
+    if (
+        cp.y - 1 > -1 &&
+        cells[cp.y - 1][cp.x].color != cl_empty &&
+        cells[cp.y - 1][cp.x].color != cl_self
+    ) {
+        cells[cp.y - 1][cp.x].color = cl_self
+    }
+    
     // cells[cp.y][cp.x + 1].color = '#555'
     // cells[cp.y][cp.x - 1].color = '#555'
     // cells[cp.y + 1][cp.x].color = '#555'
@@ -136,6 +178,7 @@ mrg = 0
 // cl_bg = "#0088ff"
 cl_bg = "#fff"
 cl_empty = '#eee'
+cl_self = 'black'
 
 cells = []
 
@@ -222,14 +265,14 @@ const socket = io()
 socket.on('move', (data) => {
     cells[data.y][data.x].color = data.color
 
-    if (
-        data.x + 1 < xcells && cells[data.y][data.x + 1].color == 'black' ||
-        data.x - 1 > -1 && cells[data.y][data.x - 1].color == 'black' ||
-        data.y + 1 < ycells && cells[data.y + 1][data.x].color == 'black' ||
-        data.y - 1 > -1 && cells[data.y - 1][data.x].color == 'black'
-    ) {
-        console.log('pass')
-    }
+    // if (
+    //     data.x + 1 < xcells && cells[data.y][data.x + 1].color == 'black' ||
+    //     data.x - 1 > -1 && cells[data.y][data.x - 1].color == 'black' ||
+    //     data.y + 1 < ycells && cells[data.y + 1][data.x].color == 'black' ||
+    //     data.y - 1 > -1 && cells[data.y - 1][data.x].color == 'black'
+    // ) {
+    //     console.log('pass')
+    // }
 
     if (data.x + 1 < xcells && cells[data.y][data.x + 1].color != cl_empty) {
         cells[data.y][data.x + 1].color = data.color
