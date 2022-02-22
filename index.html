@@ -118,6 +118,9 @@ window.addEventListener('mousedown', e => {
                 cells[cp.y - 1][cp.x].color = cl_self
             }
 
+            selc.x = cp.x
+            selc.y = cp.y
+
             var data = {
                 x: cp.x,
                 y: cp.y,
