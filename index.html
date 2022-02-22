@@ -145,7 +145,7 @@ window.addEventListener('mousedown', e => {
 
 
     // if (cp.x + 1 < xcells && ![cl_empty, cl_self].includes(cells[cp.y][cp.x + 1].color)) {
-    //     cells[cp.y][cp.x + 1].color = cp.color
+    //     cells[cp.y][cp.x + 1].color = cp.color // cl_self bruw
     // }
     // if (cp.x - 1 > -1 && ![cl_empty, cl_self].includes(cells[cp.y][cp.x - 1].color)) {
     //     cells[cp.y][cp.x - 1].color = cp.color
@@ -235,6 +235,7 @@ cells[riy][rix].color = cl_self
 
 
 console.log(cells)
+console.table(cells)
 
 xmouse = 0
 ymouse = 0

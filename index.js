@@ -7,6 +7,9 @@ const io = new Server(server)
 
 const port = process.env.PORT || 5000;
 
+console.log('|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||')
+console.log(process.env)
+
 app.use('/server-assets', express.static(__dirname + '/assets'))
 
 app.get('/', (req, res) => {
