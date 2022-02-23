@@ -11,6 +11,13 @@
             border: 0px solid black;
             background-color: #ff0000;
         }
+
+        #initScreen {
+            display: block;
+        }
+        #gameScreen {
+            display: none;
+        }
     </style>
 </head>
 
@@ -20,9 +27,28 @@
     td moving bg
 </p> -->
 
-<canvas id="canvas">
-    Your browser does not support HTML5
-</canvas>
+
+
+<div id="initScreen">
+    <h1>init</h1>
+
+    <button
+        type="submit"
+        class="btn btn-success"
+        id="newRoomButton"
+    >
+        proceed
+    </button>
+</div>
+
+
+
+
+<div id="gameScreen">
+    <canvas id="canvas">
+        Your browser does not support HTML5
+    </canvas>
+</div>
 
 <!-- <h1 id="hone">helllwo</h1> -->
 
@@ -84,7 +110,7 @@ window.addEventListener('mousedown', e => {
         x: Math.floor(xmouse / gz)
     }
 
-    if (cells[cp.y][cp.x].color == cl_empty) {
+    if (cp.x <= xcells && cp.y <= ycells && cells[cp.y][cp.x].color == cl_empty) {
 
         if (Math.abs(selc.x - cp.x) <= 1 && Math.abs(selc.y - cp.y) <= 1) {
             cells[cp.y][cp.x].color = cl_self
@@ -181,6 +207,25 @@ window.addEventListener('mouseup', e => {
     console.log(mdown)
 })
 
+initScreen = document.getElementById('initScreen')
+gameScreen = document.getElementById('gameScreen')
+newRoomBtn = document.getElementById('newRoomButton')
+
+
+newRoomBtn.addEventListener('click', goGame)
+
+function goGame() {
+    initScreen.style.display = 'none'
+    gameScreen.style.display = 'block'
+
+    setInterval(draw, framerate)
+    socket.emit('new-player', cb => {
+        cells = cb.cells
+        console.log(']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]')
+        console.log(cells)
+    })
+}
+
 
 counter = 0
 let canvas = document.getElementById('canvas')
@@ -191,7 +236,7 @@ cheight = 600
 canvas.width = cwidth
 canvas.height = cheight
 
-framerate = 20
+framerate = Math.floor(1000 / 50)
 
 gz = 50
 xcells = cwidth / gz
@@ -226,7 +271,7 @@ for (let i = 0; i < ycells; i++) {
 }
 
 // cells[3][5].color = 'orange'
-cells[3][5].color = 'crimson'
+cells[3][5].color = 'yellowgreen'
 
 rix = rint(0, xcells - 1)
 riy = rint(0, ycells - 1)
@@ -244,9 +289,11 @@ mdown = false
 
 
 
+
+
 function draw() {
 
-    // console.log("draw loop")
+    console.log("draw loop")
     // mpos = getMousePos(canvas, e)
     // console.log(xmouse, ymouse)
     
@@ -301,10 +348,20 @@ function draw() {
 
 }
 
-setInterval(draw, framerate)
+
+// setInterval(draw, framerate)
 
 
 const socket = io()
+
+
+// var data = {
+//     cells: cells
+// }
+
+// socket.emit('move', {
+//     cells: cells
+// })
 
 
 socket.on('move', (data) => {
